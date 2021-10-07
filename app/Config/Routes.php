@@ -31,15 +31,8 @@ $routes->setAutoRoute(true);
 
 // We get a performance increase by specifying the default
 // route since we don't have to scan directories.
-$routes->get('/', 'Home::index');
-$routes->get('/coba/index', 'Coba::index');
-$routes->get('/coba/about', 'Coba::about');
-// placeholder (:any)= ambil apapun yg dimasukkan ke url,  $1 = ambil inputan pertama, boleh ada $2 sampai n klo mau
-$routes->get('/coba/(:any)', 'Coba::about/$1');
-// Coba::about/$1/$2 = biar gaperlu nulis index di url nya
+$routes->get('/', 'Pages::index');
 
-// klo ada yg ngakses ke users, maka arahkan ke namespace Admin, controller Users, method index
-$routes->get('/users', 'Admin\Users::index');
 /*
  * --------------------------------------------------------------------
  * Additional Routing
