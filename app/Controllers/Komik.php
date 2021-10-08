@@ -33,7 +33,6 @@ class Komik extends BaseController
     // $komikModel = new \App\Models\KomikModel();
     // $komikModel = new KomikModel();  pindah keatas, __construct
     
-
     return view('komik/index', $data);
   }
 
@@ -46,7 +45,45 @@ class Komik extends BaseController
       'title' => 'Detail Komik',
       'komik' => $this->komikModel->getKomik($slug)
     ];
+    
+    // jika komik tidak ada di tabel
+    if(empty($data['komik'])) {
+      // utk menampilkan exception dari CI4
+      throw new \CodeIgniter\Exceptions\PageNotFoundException('Judul komik '. $slug . ' tidak ditemukan.');
+    }
+
     return view('komik/detail', $data);
   }
 
+  public function create()
+  {
+    $data = [
+      'title' => 'Form Tambah Data Komik'
+    ];
+
+    return view('komik/create', $data);
+  }
+
+  // utk mengelola data yg dikirim dari create, utk diinsert kedalam table
+  public function save()
+  {
+    // getVar() = bisa nerima semua method POST dan GET
+    // dd($this->request->getVar());
+
+    // url_title() = biar stringnya ramah URL
+    $slug = url_title($this->request->getVar('judul'), '-', true);
+    // save = INSERT INTO model  (CI4)
+    $this->komikModel->save([
+      'judul' => $this->request->getVar('judul'),
+      'slug' => $slug,
+      'penulis' => $this->request->getVar('penulis'),
+      'penerbit' => $this->request->getVar('penerbit'),
+      'sampul' => $this->request->getVar('sampul')
+    ]);
+
+    // buat bikin flashdata
+    session()->setFlashdata('pesan', 'Data berhasil ditambahkan.');
+
+    return redirect()->to('/komik');
+  }
 }

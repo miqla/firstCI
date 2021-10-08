@@ -4,7 +4,17 @@
 <div class="container">
   <div class="row">
     <div class="col">
+      <a href="/komik/create" class="btn btn-primary mt-3">Tambah Data Komik</a>
     <h1 class="mt-2" >Daftar Komik</h1>
+    <!-- klo dapet flasdata yg namanya pesan -->
+    <?php if (session()->getFlashdata('pesan')) : ?>
+      <div class="alert alert-success alert-dismissible fade show" role="alert">
+        <strong>Yeay!</strong> <?= session()->getFlashdata('pesan'); ?>
+        <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+    <?php endif; ?>
     <table class="table">
   <thead>
     <tr>
