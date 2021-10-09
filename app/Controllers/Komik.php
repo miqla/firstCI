@@ -83,7 +83,8 @@ class Komik extends BaseController
           'required' => '{field} komik harus diisi',
           'is_unique' => '{field} komik sudah terdaftar'
         ]
-      ]
+        ],
+        'sampul' => 'uploaded[sampul]'
     ])) {
       // menampilkan pesan kesalahan
       $validation = \Config\Services::validation();             // key , value
@@ -108,4 +109,72 @@ class Komik extends BaseController
 
     return redirect()->to('/komik');
   }
+
+  public function delete($id)
+  {
+    $this->komikModel->delete($id);
+    session()->setFlashdata('pesan', 'Data berhasil dihapus.');
+    return redirect()->to('/komik');
+  }
+
+  public function edit($slug)
+  {
+    $data = [
+      'title' => 'Form Ubah Data Komik',
+      'validation' => \Config\Services::validation(),
+      'komik' => $this->komikModel->getKomik($slug)
+    ];
+
+    return view('komik/edit', $data);
+  }
+
+  public function update($id)
+  {
+    // cek judul
+    $komikLama = $this->komikModel->getKomik($this->request->getVar('slug'));
+    if($komikLama['judul'] == $this->request->getVar('judul')) {
+      $rule_judul = 'reuired';
+    } else {
+      $rule_judul = 'required|is_unique[komik.judul]';
+    }
+
+    if(!$this->validate([
+      // 'judul' => 'required|is_unique[komik.judul]'
+
+      // custom pesan error
+      'judul' => [
+        'rules' => $rule_judul,
+        'errors' => [
+          'required' => '{field} komik harus diisi',
+          'is_unique' => '{field} komik sudah terdaftar'
+        ]
+        ],
+        // gambar wajib diisi
+        'sampul' =>'uploaded[sampul]'
+    ])) {
+      // menampilkan pesan kesalahan
+    //  $validation = \Config\Services::validation();             // key , value
+      // return redirect()->to('/komik/edit/'. $this->request->getVar('slug'))->withInput()->with('validation', $validation);
+      return redirect()->to('/komik/edit/'. $this->request->getVar('slug'))->withInput();
+    }
+
+    // getvar() gausah diisi karna mau ambil semua inputannya
+    // dd($this->request->getVar());
+
+    $slug = url_title($this->request->getVar('judul'), '-', true);
+    // save = INSERT INTO model  (CI4)
+    $this->komikModel->save([
+      'id' => $id,
+      'judul' => $this->request->getVar('judul'),
+      'slug' => $slug,
+      'penulis' => $this->request->getVar('penulis'),
+      'penerbit' => $this->request->getVar('penerbit'),
+      'sampul' => $this->request->getVar('sampul')
+    ]);
+
+    session()->setFlashdata('pesan', 'Data berhasil diubah.');
+
+    return redirect()->to('/komik');
+  }
+
 }

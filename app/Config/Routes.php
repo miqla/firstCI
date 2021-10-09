@@ -33,10 +33,12 @@ $routes->setAutoRoute(true);
 // route since we don't have to scan directories.
 $routes->get('/', 'Pages::index');
 
-// klo ada user yg ngetik kek gini, maka arahkan ke.. 
+// klo ada user yg ngetik kek gini, maka arahkan ke komik yg methodnya create (dianggap satu)
 $routes->get('/komik/create', 'Komik::create');
-$routes->get('/komik/save', 'Komik::save');
-$routes->get('/komik/(:segment)', 'Komik::detail/$1');
+// $routes->get('/komik/save', 'Komik::save');      ternyata gaperlu wkwk
+$routes->get('/komik/edit/(:segment)', 'Komik::edit/$1');
+$routes->delete('/komik/(:num)', 'Komik::delete/$1');
+$routes->get('/komik/(:any)', 'Komik::detail/$1');
 // klo pake segment, semua halaman turunannya perlu dibuat route baru, biar ga disangka bagian dari segment
 
 /*
